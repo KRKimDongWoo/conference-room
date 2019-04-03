@@ -57,7 +57,7 @@ class MeetingList extends Component {
 	findUser = (id) => {
 		let username = 'Unknown'
 		this.props.users.forEach( user => {
-			if(user.id == id)
+			if(user.id === id)
 				username = user.username
 		})
 		return username

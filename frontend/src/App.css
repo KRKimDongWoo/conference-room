@@ -1,3 +1,7 @@
+@import url("css/normalize.css")
+@import url("css/sakura.css")
+
+/*
 .App {
   text-align: center;
 }
@@ -31,3 +35,4 @@
     transform: rotate(360deg);
   }
 }
+*/

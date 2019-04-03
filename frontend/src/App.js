@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
 import './App.css'
 
+import { Route, Switch, BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 import rootReducer from './reducers/index'
 import rootSaga from './sagas/sagas'
 import createSagaMiddleware from 'redux-saga'
 
-import MainContainer from './components/mainContainer'
+import MainContainer from './components/MainContainer'
+import NotFound from './components/NotFound'
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -21,7 +23,12 @@ class App extends Component {
   render() {
 		return (
 			<Provider store={store}>
-				<MainContainer />
+				<BrowserRouter>
+					<Switch>
+						<Route exact path="/" component={MainContainer} />
+						<Route component={NotFound} />
+					</Switch>
+				</BrowserRouter>
 			</Provider>
 		);
   }
