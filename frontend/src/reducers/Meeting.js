@@ -1,11 +1,18 @@
 const initialState = {
-	meetings: []
+	meetings: [],
+	users: []
 }
 
 export default function meetings(state=initialState, action) {
 	let meetingList = state.meetings.slice()
 
 	switch (action.type) {
+		case 'GET_USER':
+			console.log('Get User Lists')
+			return Object.assign({}, state, {
+				users: action.users
+			})
+	
 		case 'GET_MEETING':
 			console.log('GET : ')
 			return Object.assign({}, state, {

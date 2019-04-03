@@ -4,6 +4,7 @@ import * as actions from '../actions/index'
 
 const loginUrl= 'http://127.0.0.1:8000/users/login/'
 const meetingUrl= 'http://127.0.0.1:8000/meetings/'
+const userUrl= 'http://127.0.0.1:8000/users/'
 
 export function* logInTryRequest(name, passwd) {
 	const ret = yield call(api.logIn, loginUrl, name, passwd)
@@ -102,11 +103,29 @@ export function* watchDeleteMeetingRequest() {
 	}
 }
 
+export function* getUser() {
+	const token = yield select(state => (state.auths.token))
+	const { status, data } = yield call(api.getMeeting, userUrl, token)
+	if(status >= 400) {
+		console.log('An error occured, error code : ' + status)
+	}
+	else {
+		yield put({type: actions.meetings.GET_USER, users: data})
+	}
+}
+
+export function* watchGetUserRequest() {
+	while(true) {
+		yield take(actions.meetings.GET_USER_REQUEST)
+		yield call(getUser)
+	}
+}
+
 export default function* rootSaga() {
 	yield fork(watchLogInTryRequest)
 	yield fork(watchGetMeetingRequest)
 	yield fork(watchPostMeetingRequest)
 	yield fork(watchPutMeetingRequest)
 	yield fork(watchDeleteMeetingRequest)
-
+	yield fork(watchGetUserRequest)
 }

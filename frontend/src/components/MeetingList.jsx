@@ -24,6 +24,7 @@ class MeetingList extends Component {
 	
 	componentDidMount() {
 		this.props.getMeetingRequest()
+		this.props.getUserRequest()
 	}
 	
 	onSubmit = (e) => {
@@ -51,6 +52,15 @@ class MeetingList extends Component {
 		})
 
 		this.resetForm()
+	}
+
+	findUser = (id) => {
+		let username = 'Unknown'
+		this.props.users.forEach( user => {
+			if(user.id == id)
+				username = user.username
+		})
+		return username
 	}
 	
 	render() {
@@ -96,7 +106,7 @@ class MeetingList extends Component {
 						{this.props.meetings.map((meeting, index) => {
 							return (this.state.updatedMeetingId===index) ? 
 								<tr key={`meeting_update_${index}`}>
-									<td>User {meeting.user}</td>
+									<td>{this.findUser(meeting.user)}</td>
 									<td>
 										<input
 											type="datetime-local" id="updateSinceWhen"
@@ -107,15 +117,18 @@ class MeetingList extends Component {
 											onChange={e => this.setState({updateTilWhen: e.target.value})} />
 									</td>
 									<td>
-										<button onClick={(e) => this.confirmUpdate(e)}>Confirm</button>
+										<button onClick={e => this.confirmUpdate(e)}>Confirm</button>
+									</td>
+									<td>
+										<button onClick={e => this.setState({updatedMeetingId: null})}>Cancel</button>
 									</td>
 								</tr>
 								:
 								<tr key={`meeting_${index}`}>
-									<td>User {meeting.user}</td>
+									<td>{this.findUser(meeting.user)}</td>
 									<td>{meeting.sinceWhen} ~ {meeting.tilWhen}</td>
-									<td><button onClick={() => this.chooseUpdate(index)}>Edit</button></td>
-									<td><button onClick={() => this.props.deleteMeetingRequest(index)}>Delete</button></td>
+									<td><button onClick={e => this.chooseUpdate(index)}>Edit</button></td>
+									<td><button onClick={e => this.props.deleteMeetingRequest(index)}>Delete</button></td>
 								</tr>
 						})}
 					</tbody>
@@ -129,6 +142,7 @@ class MeetingList extends Component {
 const mapStateToProps = state => {
 	return {
 		meetings : state.meetings.meetings,
+		users : state.meetings.users,
 		username : state.auths.username,
 	}
 
@@ -138,6 +152,9 @@ const mapDispatchToProps = dispatch => {
 	return {
 		getMeetingRequest: () => {
 			dispatch(meetings.getMeetingRequest())
+		},
+		getUserRequest: () => {
+			dispatch(meetings.getUserRequest())
 		},
 		postMeetingRequest: (meeting) => {
 			dispatch(meetings.postMeetingRequest(meeting))
